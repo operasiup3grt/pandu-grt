@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#0b1020">
+
+  <meta name="color-scheme" content="light">
+
+  <title>Panduan Operasi Garut</title>
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <style>
+    /* =================================
+       01. DESIGN TOKENS
+    ================================= */
+
+    :root {
+      --bg: #0b1020;
+      --loader-bg: #111a2e;
+      --loader-text: #e8eefc;
+      --loader-muted: #91a0bd;
+      --accent: #65a9ff;
+    }
+
+    /* =================================
+       02. RESET & DOCUMENT
+    ================================= */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+
+      overflow: hidden;
+
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+
+      background: var(--bg);
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+
+      overflow: hidden;
+      background: var(--bg);
+
+      overscroll-behavior: none;
+    }
+
+    /* =================================
+       03. APP CONTAINER
+    ================================= */
+
+    .app {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    /* =================================
+       04. LOADING SCREEN
+    ================================= */
+
+    .loader {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      gap: 16px;
+
+      padding: 24px;
+
+      background: var(--loader-bg);
+      color: var(--loader-text);
+
+      font-family: system-ui, sans-serif;
+
+      transition: opacity .3s ease,
+                  visibility .3s ease;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-ring {
+      width: 38px;
+      height: 38px;
+
+      border: 3px solid rgba(255,255,255,.12);
+      border-top-color: var(--accent);
+
+      border-radius: 50%;
+
+      animation: spin .8s linear infinite;
+    }
+
+    .loader-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    .loader-subtitle {
+      font-size: 12px;
+      color: var(--loader-muted);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* =================================
+       05. DASHBOARD IFRAME
+    ================================= */
+
+    .dashboard-frame {
+      position: absolute;
+      inset: 0;
+
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      margin: 0;
+      padding: 0;
+
+      border: 0;
+      outline: 0;
+
+      background: transparent;
+
+      pointer-events: auto;
+    }
+
+    /* =================================
+       06. ACCESSIBILITY
+    ================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader-ring {
+        animation-duration: 2s;
+      }
+
+      .loader {
+        transition: none;
+      }
+    }
+
+    /* =================================
+       07. VIEWPORT FALLBACK
+    ================================= */
+
+    @supports (height: 100dvh) {
+      .app {
+        height: 100dvh;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <div class="loader" id="loader" role="status">
+      <div class="loader-ring"></div>
+
+      <div class="loader-title">
+        Dashboard FGTM UP3 Garut
+      </div>
+
+      <div class="loader-subtitle">
+        Menghubungkan ke dashboard...
+      </div>
+    </div>
+
+    <iframe
+      id="dashboard"
+      class="dashboard-frame"
+
+      src="https://script.google.com/macros/s/AKfycbxaOyE1nLO_Yla8bDwoxGCdez2mhx6afwxcs1mpcA6WpaeXWjYsnMHZSpZRsK1LUcnIpg/exec"
+
+      title="Panduan Operasi Garut"
+
+      allow="clipboard-write; fullscreen"
+      allowfullscreen
+
+      referrerpolicy="strict-origin-when-cross-origin">
+    </iframe>
+
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const frame = document.getElementById("dashboard");
+      const loader = document.getElementById("loader");
+
+      let loaded = false;
+
+      frame.addEventListener("load", () => {
+        loaded = true;
+
+        loader.classList.add("hidden");
+      });
+
+      // Fallback jika proses pemuatan terlalu lama.
+      // Tidak menganggap timeout sebagai bukti iframe gagal.
+      window.setTimeout(() => {
+        if (!loaded) {
+          loader.querySelector(".loader-subtitle").textContent =
+            "Halaman masih dimuat. Mohon tunggu...";
+        }
+      }, 15000);
+
+    })();
+  </script>
+
+</body>
+</html>
